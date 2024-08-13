@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const UserMediaCard = ({ userId }) => {
+const UserMediaCard = ({ user }) => {
   return (
     <div className="flex flex-col gap-4 p-4 bg-white rounded-lg shadow-md text-sm">
       {/* TOP */}

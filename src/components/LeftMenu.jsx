@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import Ad from "./Ad";
+import prisma from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
 
 const LeftMenu = ({ type }) => {
   return (
@@ -83,18 +85,35 @@ const LeftMenu = ({ type }) => {
 };
 export default LeftMenu;
 
-const ProfileCard = () => {
+const ProfileCard = async () => {
+  const { userId } = auth();
+  if (!userId) return null;
+  const user = await prisma.user.findFirst({
+    where: {
+      id: userId,
+    },
+    include: {
+      _count: {
+        select: {
+          followers: true,
+        },
+      },
+    },
+  });
+
+  if (!user) return null;
+
   return (
     <div className=" flex flex-col gap-6 p-4 bg-white rounded-lg shadow-md text-sm">
       <div className="h-20 relative">
         <Image
-          src="https://images.pexels.com/photos/15236842/pexels-photo-15236842/free-photo-of-woman-at-ruins-of-library-of-celsus.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+          src={user.cover || "noCover.png"}
           alt=""
           fill
           className="rounded-md object-cover"
         />
         <Image
-          src="https://images.pexels.com/photos/27054259/pexels-photo-27054259/free-photo-of-a-girl-with-a-helmet-sitting-on-the-grass-near-a-lake.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+          src={user.avatar || "noAvatar.png"}
           alt=""
           width={48}
           height={48}
@@ -102,7 +121,11 @@ const ProfileCard = () => {
         />
       </div>
       <div className="h-20 flex flex-col items-center gap-2">
-        <span className="font-semibold">Prashant</span>
+        <span className="font-semibold">
+          {user.name && user.lastname
+            ? user.name + " " + user.lastname
+            : user.username}
+        </span>
         <div className="flex items-center gap-4">
           <div className="flex gap-1">
             <Image
@@ -127,7 +150,9 @@ const ProfileCard = () => {
               className="rounded-full size-3 object-cover"
             />
           </div>
-          <span className="text-xs text-gray-500">500 Followers</span>
+          <span className="text-xs text-gray-500">
+            {user._count.followers} Followers
+          </span>
         </div>
         <button className="bg-blue-500 text-white text-xs p-2 rounded-md">
           My Profile

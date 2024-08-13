@@ -10,7 +10,8 @@ datasource db {
 
 model Post {
   id        String    @id @default(cuid())
-  content   String?
+  content   String
+  img       String?
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
