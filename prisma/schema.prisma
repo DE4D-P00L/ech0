@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model Post {
+  id        String    @id @default(cuid())
+  content   String?
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  likes     Like[]
+  comments  Comment[]
+}
+
+model User {
+  id                   String          @id @default(cuid())
+  username             String          @unique
+  avatar               String?
+  cover                String?
+  name                 String?
+  lastname             String?
+  description          String?
+  city                 String?
+  school               String?
+  work                 String?
+  website              String?
+  email                String?         @unique
+  createdAt            DateTime        @default(now()) @map("created_at")
+  posts                Post[]
+  likes                Like[]
+  comments             Comment[]
+  followers            Follower[]      @relation("UserFollowers")
+  followings           Follower[]      @relation("UserFollowing")
+  followRequestSent    FollowRequest[] @relation("FollowRequestSent")
+  followRequestReceive FollowRequest[] @relation("FollowRequestReceived")
+  blocksSent            Block[]         @relation("BlocksSent")
+  blockedBy        Block[]         @relation("BlocksReceived")
+  story             Story[]
+
+  @@map("users")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+  likes     Like[]
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+  userId    String
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String?
+  Comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId String?
+}
+
+model Follower {
+  id          String   @id @default(cuid())
+  follower    User     @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
+  followerId  String
+  following   User     @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
+  followingId String
+  createdAt   DateTime @default(now()) @map("created_at")
+}
+
+model FollowRequest {
+  id         String   @id @default(cuid())
+  sender     User     @relation("FollowRequestSent", fields: [senderId], references: [id], onDelete: Cascade)
+  senderId   String
+  receiver   User     @relation("FollowRequestReceived", fields: [receiverId], references: [id], onDelete: Cascade)
+  receiverId String
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@unique([senderId, receiverId])
+}
+
+model Block {
+  id        String   @id @default(cuid())
+  blocker   User     @relation("BlocksSent", fields: [blockerId], references: [id], onDelete: Cascade)
+  blockerId String
+  blocked   User     @relation("BlocksReceived", fields: [blockedId], references: [id], onDelete: Cascade)
+  blockedId String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([blockerId, blockedId])
+}
+
+model Story {
+  id        String    @id @default(cuid())
+  img       String
+  createdAt DateTime  @default(now()) @map("created_at")
+  expiresAt DateTime  
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String    @unique
+}
+
