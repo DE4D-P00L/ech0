@@ -4,6 +4,8 @@ import Image from "next/image";
 import UserInfoCard from "./UserInfoCard";
 import UserMediaCard from "./UserMediaCard";
 import { Suspense } from "react";
+import { auth } from "@clerk/nextjs/server";
+import FriendRequestList from "./FriendRequestList";
 
 const RightMenu = ({ user }) => {
   return (
@@ -26,7 +28,22 @@ const RightMenu = ({ user }) => {
 };
 export default RightMenu;
 
-const FriendRequest = () => {
+const FriendRequest = async () => {
+  const { userId } = auth();
+
+  if (!userId) return null;
+
+  const requests = await prisma.followRequest.findMany({
+    where: {
+      receiverId: userId,
+    },
+    include: {
+      sender: true,
+    },
+  });
+
+  if (requests.length === 0) return null;
+
   return (
     <div className="flex flex-col gap-4 p-4 bg-white rounded-lg shadow-md text-sm">
       {/* TOP */}
@@ -37,90 +54,7 @@ const FriendRequest = () => {
         </Link>
       </div>
       {/* BOTTOM */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Image
-            src="https://images.pexels.com/photos/17238285/pexels-photo-17238285/free-photo-of-portrait-of-man-in-green-t-shirt.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-            alt=""
-            width={40}
-            height={40}
-            className="size-10 rounded-full"
-          />
-          <span className="font-semibold">Bruce Wayne</span>
-        </div>
-        <div className="flex gap-3 justify-end">
-          <Image
-            src="/accept.png"
-            alt=""
-            width={20}
-            height={20}
-            className="cursor-pointer"
-          />
-          <Image
-            src="/reject.png"
-            alt=""
-            width={20}
-            height={20}
-            className="cursor-pointer"
-          />
-        </div>
-      </div>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Image
-            src="https://images.pexels.com/photos/17238285/pexels-photo-17238285/free-photo-of-portrait-of-man-in-green-t-shirt.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-            alt=""
-            width={40}
-            height={40}
-            className="size-10 rounded-full"
-          />
-          <span className="font-semibold">Clark Kent</span>
-        </div>
-        <div className="flex gap-3 justify-end">
-          <Image
-            src="/accept.png"
-            alt=""
-            width={20}
-            height={20}
-            className="cursor-pointer"
-          />
-          <Image
-            src="/reject.png"
-            alt=""
-            width={20}
-            height={20}
-            className="cursor-pointer"
-          />
-        </div>
-      </div>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Image
-            src="https://images.pexels.com/photos/17238285/pexels-photo-17238285/free-photo-of-portrait-of-man-in-green-t-shirt.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-            alt=""
-            width={40}
-            height={40}
-            className="size-10 rounded-full"
-          />
-          <span className="font-semibold">Barry</span>
-        </div>
-        <div className="flex gap-3 justify-end">
-          <Image
-            src="/accept.png"
-            alt=""
-            width={20}
-            height={20}
-            className="cursor-pointer"
-          />
-          <Image
-            src="/reject.png"
-            alt=""
-            width={20}
-            height={20}
-            className="cursor-pointer"
-          />
-        </div>
-      </div>
+      <FriendRequestList requests={requests} />
     </div>
   );
 };

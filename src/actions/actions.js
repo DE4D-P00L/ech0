@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
 
 export const switchFollow = async (userId) => {
   const { userId: currentUserId } = auth();
@@ -73,6 +74,60 @@ export const switchBlock = async (userId) => {
         data: {
           blockerId: currentUserId,
           blockedId: userId,
+        },
+      });
+    }
+  } catch (error) {
+    console.log(error.message);
+    throw new Error("Something went wrong");
+  }
+};
+
+export const acceptFollowRequest = async (userId) => {
+  const { userId: currentUserId } = auth();
+  if (!currentUserId) throw new Error("User not authenticated");
+  try {
+    const existingFollowRequest = await prisma.followRequest.findFirst({
+      where: {
+        senderId: userId,
+        receiverId: currentUserId,
+      },
+    });
+
+    if (existingFollowRequest) {
+      await prisma.followRequest.delete({
+        where: {
+          id: existingFollowRequest.id,
+        },
+      });
+      await prisma.follower.create({
+        data: {
+          followerId: userId,
+          followingId: currentUserId,
+        },
+      });
+    }
+  } catch (error) {
+    console.log(error.message);
+    throw new Error("Something went wrong");
+  }
+};
+
+export const rejectFollowRequest = async (userId) => {
+  const { userId: currentUserId, username } = auth();
+  if (!currentUserId) throw new Error("User not authenticated");
+  try {
+    const existingFollowRequest = await prisma.followRequest.findFirst({
+      where: {
+        senderId: userId,
+        receiverId: currentUserId,
+      },
+    });
+
+    if (existingFollowRequest) {
+      await prisma.followRequest.delete({
+        where: {
+          id: existingFollowRequest.id,
         },
       });
     }
