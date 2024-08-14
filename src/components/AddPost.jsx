@@ -1,13 +1,9 @@
-import { testAction } from "@/actions/actions";
 import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 
 const AddPost = () => {
   const { userId } = auth();
-  console.log(userId);
   if (!userId) return;
-
-  const addPost = testAction.bind(null, userId);
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-md flex gap-4 justify-between text-sm">
@@ -19,7 +15,7 @@ const AddPost = () => {
         className="size-12 object-cover rounded-full"
       />
       <div className="flex-1">
-        <form action={addPost} className="flex gap-4">
+        <form className="flex gap-4">
           <textarea
             name="content"
             placeholder="Whats's on your mind?"
