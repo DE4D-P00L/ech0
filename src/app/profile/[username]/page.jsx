@@ -53,13 +53,13 @@ const ProfilePage = async ({ params }) => {
           <div className="flex flex-col items-center justify-center">
             <div className="w-full h-64 relative">
               <Image
-                src={user.cover || "noCover.png"}
+                src={user.cover || "/noCover.png"}
                 alt=""
                 fill
                 className="object-cover rounded-md"
               />
               <Image
-                src={user.avatar || "noAvatar.png"}
+                src={user.avatar || "/noAvatar.png"}
                 alt=""
                 width={128}
                 height={128}
@@ -77,16 +77,18 @@ const ProfilePage = async ({ params }) => {
                 <span className="text-sm">Posts</span>
               </div>
               <div className="flex flex-col items-center">
+                {/* Count of people current user is following*/}
                 <span className="font-medium">{user._count.followers}</span>
-                <span className="text-sm">Followers</span>
+                <span className="text-sm">Following</span>
               </div>
               <div className="flex flex-col items-center">
+                {/* Count of people following this user */}
                 <span className="font-medium">{user._count.followings}</span>
-                <span className="text-sm">Following</span>
+                <span className="text-sm">Followers</span>
               </div>
             </div>
           </div>
-          <PostFeed />
+          <PostFeed username={user.username} />
         </div>
       </div>
       <div className="hidden lg:block w-[30%]">

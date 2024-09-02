@@ -20,7 +20,7 @@ const RightMenu = ({ user }) => {
           </Suspense>
         </>
       )}
-      <FriendRequest />
+      <FollowRequest />
       <Birthdays />
       <Ad size="md" />
     </div>
@@ -28,7 +28,7 @@ const RightMenu = ({ user }) => {
 };
 export default RightMenu;
 
-const FriendRequest = async () => {
+const FollowRequest = async () => {
   const { userId } = auth();
 
   if (!userId) return null;
@@ -48,7 +48,7 @@ const FriendRequest = async () => {
     <div className="flex flex-col gap-4 p-4 bg-white rounded-lg shadow-md text-sm">
       {/* TOP */}
       <div className="flex justify-between items-center font-medium">
-        <span className="text-gray-500">Friend Requests</span>
+        <span className="text-gray-500">Follow Requests</span>
         <Link href="/comments" className="text-blue-500 text-xs">
           See all
         </Link>

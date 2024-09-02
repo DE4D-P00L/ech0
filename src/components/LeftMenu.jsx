@@ -95,7 +95,7 @@ const ProfileCard = async () => {
     include: {
       _count: {
         select: {
-          followers: true,
+          followings: true,
         },
       },
     },
@@ -107,13 +107,13 @@ const ProfileCard = async () => {
     <div className=" flex flex-col gap-6 p-4 bg-white rounded-lg shadow-md text-sm">
       <div className="h-20 relative">
         <Image
-          src={user.cover || "noCover.png"}
+          src={user.cover || "/noCover.png"}
           alt=""
           fill
           className="rounded-md object-cover"
         />
         <Image
-          src={user.avatar || "noAvatar.png"}
+          src={user.avatar || "/noAvatar.png"}
           alt=""
           width={48}
           height={48}
@@ -151,12 +151,14 @@ const ProfileCard = async () => {
             />
           </div>
           <span className="text-xs text-gray-500">
-            {user._count.followers} Followers
+            {user._count.followings} Followers
           </span>
         </div>
-        <button className="bg-blue-500 text-white text-xs p-2 rounded-md">
+        <Link
+          href={`/profile/${user?.username}`}
+          className="bg-blue-500 text-white text-xs p-2 rounded-md">
           My Profile
-        </button>
+        </Link>
       </div>
     </div>
   );

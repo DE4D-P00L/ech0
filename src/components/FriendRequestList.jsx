@@ -34,7 +34,7 @@ const FriendRequestList = ({ requests }) => {
         <div className="flex items-center justify-between" key={req.id}>
           <div className="flex items-center gap-4">
             <Image
-              src={req.sender.avatar || "noAvatar.png"}
+              src={req.sender.avatar || "/noAvatar.png"}
               alt=""
               width={40}
               height={40}

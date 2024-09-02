@@ -51,7 +51,7 @@ const UserInfoCard = async ({ user }) => {
       <div className="flex justify-between items-center font-medium">
         <span className="text-gray-500">User Information</span>
         {currentUserId === user.id ? (
-          <UpdateUserButton />
+          <UpdateUserButton user={user} />
         ) : (
           <Link href="/comments" className="text-blue-500 text-xs">
             See all
@@ -97,9 +97,13 @@ const UserInfoCard = async ({ user }) => {
           <div className="flex items-center justify-between">
             <div className="flex gap-1 items-center">
               <Image src="/link.png" alt="" width={16} height={16} />
-              <Link href={user.website} className="font-medium text-blue-500">
+              <a
+                href={user.website}
+                rel="noreferrer"
+                target="_blank"
+                className="font-medium text-blue-500">
                 {user.website}
-              </Link>
+              </a>
             </div>
           </div>
         )}
