@@ -49,7 +49,7 @@ export const switchFollow = async (userId) => {
     }
   } catch (error) {
     console.log(error.message);
-    throw new Error("Something went wrong");
+    // throw new Error("Something went wrong");
   }
 };
 
@@ -80,7 +80,7 @@ export const switchBlock = async (userId) => {
     }
   } catch (error) {
     console.log(error.message);
-    throw new Error("Something went wrong");
+    // throw new Error("Something went wrong");
   }
 };
 
