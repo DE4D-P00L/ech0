@@ -12,9 +12,9 @@ export default function HomePage() {
       </div>
       <div className="w-full lg:w-[70%] xl:w-[50%]">
         <div className="flex flex-col gap-6">
-          <Stories />
+          {/* <Stories />
           <AddPost />
-          <PostFeed />
+          <PostFeed /> */}
         </div>
       </div>
       <div className="hidden lg:block w-[30%]">
